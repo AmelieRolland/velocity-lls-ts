@@ -47,14 +47,14 @@ export interface UserLeaves {
     }
 }
 
-export interface DateLeave {
-    date: string;
+export interface DateLeave { 
+    date: string,
     name: string,
     ownerId: number,
     am: {
-        isOff: boolean
-    }
+        isOff: boolean,
+    },
     pm: {
-        isOff: boolean
+        isOff: boolean,
     }
 }

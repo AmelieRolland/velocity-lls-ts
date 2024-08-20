@@ -58,7 +58,7 @@ export const allTechUsers = (): Promise<Users> => {
 
 //personnes dans une squad :
 
-export const getSquad = (squad: Squad):Promise<Users> => {
+export const getSquad = (squad: Squad): Promise<Users> => {
     return axios.get(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=lastName,firstName&population.userIds=${squad.userIds}`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
@@ -77,7 +77,7 @@ export const getSquad = (squad: Squad):Promise<Users> => {
 //absences et présences par id
 
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
-    return axios.get<UserLeaves>(`${BASE_URL}/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-08-19,2024-08-30`, {
+    return axios.get<UserLeaves>(`${BASE_URL}/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-08-01,2024-08-10`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
@@ -93,15 +93,15 @@ export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
 }
 
 //requête entrées de dates
-export const dateLeave = (): Promise<DateLeave> => {
-    return axios.get<DateLeave>(`${BASE_URL}/timmi-absences/api/planning/v1.0/userDates?owner.id=2,57&date=between,2024-08-19,2024-10-05&amOrPmIsOff=true`, {
+
+export const dateLeave = (id: number): Promise<DateLeave[]> => {
+    return axios.get<DateLeave[]>(`${BASE_URL}/timmi-absences/api/planning/v1.0/userDates?owner.id=${id}&date=between,2024-08-01,2024-08-10&amOrPmIsOff=true`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
         }
     })
         .then(response => {
-            console.log(response.data)
             return response.data;
         })
         .catch(error => {
@@ -134,26 +134,52 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
         for (const userId of squad.userIds) {
             const leavesData = await getLeavesByUserId(userId);
+            const dateLeaveAmPm = await dateLeave(userId);
             const absenceDays = leavesData.data.items.length / 2;
             const presenceDays = totalDays - absenceDays;
+
 
             const user = (await allTechUsers()).items.find(user => user.id === userId);
             if (user) {
                 console.log(`${user.firstName} ${user.lastName} sera présent(e) ${presenceDays} jours sur 10`);
             }
-            if (user && leavesData.data.items.length > 0) {
+            if (user && leavesData.data.items.length > 0 && dateLeaveAmPm) {
+
                 console.log(`Jours d'absence pour ${user.firstName} ${user.lastName}:`);
-                const allDay: string[] = [];
 
-                leavesData.data.items.forEach(item => {
-                    allDay.push(item.date);
-                    
-                });
-                    const uniqueDay = allDay.filter((obj, index, self) => self.findIndex(o => JSON.stringify(o) === JSON.stringify(obj)) === index);
-                    uniqueDay.forEach(day =>{
-                        console.log((dayjs(day).format(`DD/MM/YYYY`)));
+                dateLeaveAmPm.forEach(day => {
 
-                    })
+                    const allDay: string[] = [];
+                    const amDay: string[] = [];
+                    const pmDay: string[] = [];
+
+                    if (day.am.isOff === true && day.pm.isOff === true) {
+
+                        allDay.push(day.date);
+                        const uniqueDay = allDay.filter((obj, index, self) =>
+                            self.findIndex(o => JSON.stringify(o) === JSON.stringify(obj)) === index);
+                        uniqueDay.forEach(fullDay => {
+                            console.log((dayjs(fullDay).format(`DD/MM/YYYY`)));
+
+                        })
+                    }
+                    if (day.am.isOff === true && day.pm.isOff === false) {
+                        amDay.push(day.date);
+
+                        amDay.forEach(amD => {
+                            console.log((dayjs(amD).format(`DD/MM/YYYY`)), 'matin');
+
+                        })
+                    }
+                    if (day.am.isOff === false && day.pm.isOff === true) {
+                        pmDay.push(day.date);
+                        pmDay.forEach(pmD => {
+                            console.log((dayjs(pmD).format(`DD/MM/YYYY`)), 'après-midi');
+
+                        })
+                    }
+                })
+
             }
 
             if (user && leavesData.data.items.length >= 10 * 2) {

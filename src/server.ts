@@ -27,10 +27,10 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 // getLeavesByUserId(2);
 // allTechUsers();
-getSquad(squadDoc);
+// getSquad(squadDoc);
 // presenceForAllUsers();
 getLeavesBySquad(squadDoc);
-dateLeave();
+// dateLeave(39);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`)
