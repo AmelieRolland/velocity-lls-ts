@@ -148,8 +148,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
         console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);
     }
 };
-//si am = true ET am= false: on affiche le am true mais pas le am false, sans la mention am
-// si am = true OU am= false, on affiche am
+
 
 
 
