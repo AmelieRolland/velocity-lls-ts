@@ -11,15 +11,15 @@ const BASE_URL = `https://lelivrescolaire.ilucca.net`;
 
 export const squadDoc: Squad = {
     name: "Squad Documentation",
-    userIds: [39, 58]
+    userIds: [39, 58, 57]
 };
 export const squadAcc: Squad = {
     name: "Squad Accompagnement",
-    userIds: [5, 66]
+    userIds: [5, 66, 2]
 };
 export const squadCom: Squad = {
     name: "Squad Communauté",
-    userIds: [10, 71, 25, 29, 74]
+    userIds: [10, 71, 25, 29, 74, 14]
 };
 export const teamQA: Squad = {
     name: "Team QA",
@@ -39,7 +39,7 @@ export const totalDays = 10;
 //Liste de tous les users dans Tech
 
 export const allTechUsers = (): Promise<Users> => {
-    return axios.get<Users>(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=9`, {
+    return axios.get<Users>(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=9, 12`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
