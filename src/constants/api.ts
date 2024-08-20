@@ -101,7 +101,7 @@ export const presenceForAllUsers = async () => {
             const userLeaves: UserLeaves = await getLeavesByUserId(user.id);
             const totalAbsences: number = userLeaves.data.items.length / 2;
             const presenceDays: number = 10 - totalAbsences;
-            console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours`);
+            console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours sur 10`);
         }
     } catch (error) {
         console.error(`Une erreur est survenue : ${error}`);
@@ -126,10 +126,10 @@ export const getLeavesBySquad = async (squad: Squad) => {
             if (user && leavesData.data.items.length > 0) {
                 console.log(`Jours d'absence pour ${user.firstName} ${user.lastName}:`);
                 const allDay: string[] = [];
+
                 leavesData.data.items.forEach(item => {
                     allDay.push(item.date);
                     
-                    const am = item.isAM;
                 });
                     const uniqueDay = allDay.filter((obj, index, self) => self.findIndex(o => JSON.stringify(o) === JSON.stringify(obj)) === index);
                     uniqueDay.forEach(day =>{
@@ -148,6 +148,15 @@ export const getLeavesBySquad = async (squad: Squad) => {
         console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);
     }
 };
+
+//afficher date: 
+//'dd/mm/yyyy , matin
+//'dd/mm/yyyy , après midi
+// push ce format dans un tableau
+// split avec separateur ','
+//trier doublon selon premiere partie du split (date) en supprimant la deuxieme partie (am ou pm)
+// afficher le tout (date unique, date partielle avec mention am/pm)
+
 
 
 
