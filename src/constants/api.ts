@@ -1,4 +1,4 @@
-import { Squad, UserLeaves, Users } from '@/entities.js';
+import { DateLeave, Squad, UserLeaves, Users } from '@/entities.js';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dotenv/config';
@@ -58,15 +58,15 @@ export const allTechUsers = (): Promise<Users> => {
 
 //personnes dans une squad :
 
-export const getSquad = () => {
-    return axios.get(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=lastName,firstName&population.userIds=${squadDoc.userIds}`, {
+export const getSquad = (squad: Squad):Promise<Users> => {
+    return axios.get(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=lastName,firstName&population.userIds=${squad.userIds}`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
         }
     }).then(response => {
-        const inSquad: Users = response.data;
-        console.log(inSquad);
+        const inSquad = response.data;
+        return inSquad
     })
         .catch(error => {
             console.error(`Une erreur est survenue : ${error}`);
@@ -92,6 +92,24 @@ export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
         });
 }
 
+//requête entrées de dates
+export const dateLeave = (): Promise<DateLeave> => {
+    return axios.get<DateLeave>(`${BASE_URL}/timmi-absences/api/planning/v1.0/userDates?owner.id=2,57&date=between,2024-08-19,2024-10-05&amOrPmIsOff=true`, {
+        headers: {
+            'Authorization': `lucca application=${API_KEY}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            console.log(response.data)
+            return response.data;
+        })
+        .catch(error => {
+            console.error(`Une erreur est survenue : ${error}`);
+            throw error;
+        });
+}
+
 export const presenceForAllUsers = async () => {
     try {
         const usersTechRes = await allTechUsers();
@@ -99,8 +117,8 @@ export const presenceForAllUsers = async () => {
 
         for (const user of usersTech) {
             const userLeaves: UserLeaves = await getLeavesByUserId(user.id);
-            const totalAbsences: number = userLeaves.data.items.length / 2;
-            const presenceDays: number = 10 - totalAbsences;
+            const totalAbsences = userLeaves.data.items.length / 2;
+            const presenceDays = 10 - totalAbsences;
             console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours sur 10`);
         }
     } catch (error) {
@@ -149,13 +167,6 @@ export const getLeavesBySquad = async (squad: Squad) => {
     }
 };
 
-//afficher date: 
-//'dd/mm/yyyy , matin
-//'dd/mm/yyyy , après midi
-// push ce format dans un tableau
-// split avec separateur ','
-//trier doublon selon premiere partie du split (date) en supprimant la deuxieme partie (am ou pm)
-// afficher le tout (date unique, date partielle avec mention am/pm)
 
 
 
