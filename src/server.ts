@@ -29,7 +29,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // allTechUsers();
 // getSquad(squadDoc);
 // presenceForAllUsers();
-getLeavesBySquad(squadAcc);
+getLeavesBySquad(squadDoc);
 // dateLeave(39);
 
 app.listen(PORT, () => {

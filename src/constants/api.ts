@@ -1,4 +1,4 @@
-import { DateLeave, Squad, UserLeaves, Users } from '@/entities.js';
+import { DateLeave, LeaveItem, LeavePeriod, Squad, UserLeaves, Users } from '@/entities.js';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dotenv/config';
@@ -148,9 +148,9 @@ export const getLeavesBySquad = async (squad: Squad) => {
                 console.log(`Jours d'absence pour ${user.firstName} ${user.lastName}:`);
 
                 for (const date in groupedByDate) {
-                    const items = groupedByDate[date];
-                    const amLeave = items.find(item => item.isAM === true);
-                    const pmLeave = items.find(item => item.isAM === false);
+                    const items: LeaveItem[] = groupedByDate[date];
+                    const amLeave: LeaveItem = items.find(item => item.isAM === true)!;
+                    const pmLeave: LeaveItem = items.find(item => item.isAM === false)!;
 
                     if (amLeave && pmLeave) {
                         console.log(dayjs(date).format('DD/MM/YYYY'));
@@ -166,7 +166,6 @@ export const getLeavesBySquad = async (squad: Squad) => {
                 console.log(`${user.firstName} ${user.lastName} sera absent sur la durée de ce sprint`)
 
             }
-
         }
     } catch (error) {
         console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);

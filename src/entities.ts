@@ -26,24 +26,25 @@ export interface LeavePeriod {
     isConfirmed: boolean;
 }
 
+export interface LeaveItem {
+    leavePeriod: LeavePeriod;
+    isAM: boolean;
+    date: string;
+    color: string;
+    isRemoteWork: boolean;
+    isRealLeave: boolean;
+    leaveAccount: LeaveAccount;
+}
+
+export interface LeaveAccount {
+    id: number;
+    name: string;
+    i18nLabels: [];
+    isRemoteWork: boolean;
+}
 export interface UserLeaves {
     data: {
-        items: [
-            {
-                leavePeriod: LeavePeriod,
-                isAM: boolean,
-                date: string,
-                color: string,
-                isRemoteWork: boolean,
-                isRealLeave: boolean,
-                leaveAccount: {
-                    id: number;
-                    name: string;
-                    i18nLabels: [];
-                    isRemoteWork: boolean;
-
-                }
-            }]
+        items: LeaveItem[];
     }
 }
 
