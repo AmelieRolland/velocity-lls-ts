@@ -2,6 +2,7 @@ import { DateLeave, Squad, UserLeaves, Users } from '@/entities.js';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dotenv/config';
+import _ from 'lodash';
 
 
 const API_KEY = process.env.REACT_APP_API_KEY;
@@ -134,52 +135,31 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
         for (const userId of squad.userIds) {
             const leavesData = await getLeavesByUserId(userId);
-            const dateLeaveAmPm = await dateLeave(userId);
             const absenceDays = leavesData.data.items.length / 2;
             const presenceDays = totalDays - absenceDays;
 
+            const groupedByDate = _.groupBy(leavesData.data.items, 'date');
 
             const user = (await allTechUsers()).items.find(user => user.id === userId);
             if (user) {
                 console.log(`${user.firstName} ${user.lastName} sera présent(e) ${presenceDays} jours sur 10`);
             }
-            if (user && leavesData.data.items.length > 0 && dateLeaveAmPm) {
-
+            if (user && Object.keys(groupedByDate).length > 0) {
                 console.log(`Jours d'absence pour ${user.firstName} ${user.lastName}:`);
 
-                dateLeaveAmPm.forEach(day => {
+                for (const date in groupedByDate) {
+                    const items = groupedByDate[date];
+                    const amLeave = items.find(item => item.isAM === true);
+                    const pmLeave = items.find(item => item.isAM === false);
 
-                    const allDay: string[] = [];
-                    const amDay: string[] = [];
-                    const pmDay: string[] = [];
-
-                    if (day.am.isOff === true && day.pm.isOff === true) {
-
-                        allDay.push(day.date);
-                        const uniqueDay = allDay.filter((obj, index, self) =>
-                            self.findIndex(o => JSON.stringify(o) === JSON.stringify(obj)) === index);
-                        uniqueDay.forEach(fullDay => {
-                            console.log((dayjs(fullDay).format(`DD/MM/YYYY`)));
-
-                        })
+                    if (amLeave && pmLeave) {
+                        console.log(dayjs(date).format('DD/MM/YYYY'));
+                    } else if (amLeave) {
+                        console.log(`${dayjs(date).format('DD/MM/YYYY')} - Matin`);
+                    } else if (pmLeave) {
+                        console.log(`${dayjs(date).format('DD/MM/YYYY')} - Après-midi`);
                     }
-                    if (day.am.isOff === true && day.pm.isOff === false) {
-                        amDay.push(day.date);
-
-                        amDay.forEach(amD => {
-                            console.log((dayjs(amD).format(`DD/MM/YYYY`)), 'matin');
-
-                        })
-                    }
-                    if (day.am.isOff === false && day.pm.isOff === true) {
-                        pmDay.push(day.date);
-                        pmDay.forEach(pmD => {
-                            console.log((dayjs(pmD).format(`DD/MM/YYYY`)), 'après-midi');
-
-                        })
-                    }
-                })
-
+                }
             }
 
             if (user && leavesData.data.items.length >= 10 * 2) {
@@ -192,7 +172,6 @@ export const getLeavesBySquad = async (squad: Squad) => {
         console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);
     }
 };
-
 
 
 
