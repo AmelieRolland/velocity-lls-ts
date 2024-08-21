@@ -1,4 +1,4 @@
-import { DateLeave, LeaveItem, LeavePeriod, Squad, UserLeaves, Users } from '@/entities.js';
+import { DateLeave, GroupedByDate, LeaveItem, LeavePeriod, Squad, UserLeaves, Users } from '@/entities.js';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dotenv/config';
@@ -138,7 +138,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
             const absenceDays = leavesData.data.items.length / 2;
             const presenceDays = totalDays - absenceDays;
 
-            const groupedByDate = _.groupBy(leavesData.data.items, 'date');
+            const groupedByDate: GroupedByDate = _.groupBy(leavesData.data.items, 'date');
 
             const user = (await allTechUsers()).items.find(user => user.id === userId);
             if (user) {

@@ -59,3 +59,6 @@ export interface DateLeave {
         isOff: boolean,
     }
 }
+export interface GroupedByDate {
+    date: LeaveItem[];
+}
