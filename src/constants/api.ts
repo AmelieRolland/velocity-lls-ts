@@ -29,7 +29,12 @@ export const devOps: Squad = {
     name: "🛠️ Devops",
     userIds: [30]
 };
-export const totalDays = 10;
+export const totalDays = 10
+export const sprintStart = dayjs().startOf('date').format('YYYY-MM-DD')
+export const sprintEnd = dayjs().endOf('date').add(11, 'day').format('YYYY-MM-DD')
+
+console.log(sprintStart)
+console.log(sprintEnd)
 
 
 //All users in TECH + PRODUCT + QA
@@ -57,7 +62,7 @@ export const getSquad = (squad: Squad): Promise<Users> => {
 }
 
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
-    return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-06-24,2024-06-28`
+    return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,${sprintStart},${sprintEnd}`
     ).then(response => response.data
     ).catch(error => {
         console.error(`Une erreur est survenue : ${error}`);
@@ -137,7 +142,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
         }
         const totalDaysAvailable = totalDevelopers * totalDays;
         const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100;
-        console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ---- au -----\n`);
+        console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ${sprintStart} au ${sprintEnd}\n`);
         console.log(`\nSalut, ${squad.name} !`);
         console.log(`Le taux de présence de votre équipe est de ${globalPresenceRate.toFixed(0)}% pour ce sprint.\n`);
 
@@ -152,7 +157,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
             if (user.presenceDays === 0) {
                 console.log(`${user.userName} sera absent sur toute la durée de ce sprint\n`)
             } else {
-                console.log(`${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absence à prévoir :`);
+                console.log(`${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absences à prévoir :`);
                 user.absences.forEach(absence => {
                     console.log(`- ${absence}`);
                 });
@@ -194,7 +199,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
         return { squadName: squad.name, globalPresenceRate, absences };
 
     } catch (error) {
-        console.error(`Erreur lors de la récupération des données d'absence pour la squad : ${error}`);
+        console.error(`Erreur lors de la récupération des données d'absences pour la squad : ${error}`);
         throw error;
     }
 };
