@@ -88,7 +88,7 @@ export const presenceForAllUsers = async () => {
         }
     } catch (error) {
         console.error(`Une erreur est survenue : ${error}`);
-        throw error;
+        throw error
     }
 }
 
