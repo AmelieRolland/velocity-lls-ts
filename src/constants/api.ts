@@ -72,9 +72,11 @@ export const presenceForAllUsers = async () => {
 
         for (const user of usersTech) {
             const userLeaves: UserLeaves = await getLeavesByUserId(user.id)
+           if (userLeaves.data.items.length > 0){
             const totalAbsences = userLeaves?.data?.items?.length / 2
             const presenceDays = 10 - totalAbsences
             console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours sur 10`)
+           }
         }
     } catch (error) {
         console.error(`Une erreur est survenue : ${error}`);
