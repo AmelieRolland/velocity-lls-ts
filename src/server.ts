@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express"
 import "dotenv/config"
-import { allTechUsers, archi, dateLeave, devOps, getGlobalMessage, getLeavesBySquad, getLeavesByUserId, getSquad, getSquadAbsenceData, presenceForAllUsers, squadAcc, squadCom, squadDoc, teamQA} from "./constants/api.js"
+import { allTechUsers, archi, devOps, getGlobalMessage, getLeavesBySquad, getLeavesByUserId, getSquad, getSquadAbsenceData, presenceForAllUsers, squadAcc, squadCom, squadDoc, teamQA} from "./constants/api.js"
 
 const app = express()
 const PORT = process.env.PORT || 3002
@@ -29,7 +29,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // allTechUsers();
 // getSquad(teamQA);
 // presenceForAllUsers();
-getLeavesBySquad(teamQA);
+getLeavesBySquad(squadCom);
 // dateLeave();
 // getGlobalMessage();
 // getSquadAbsenceData(teamQA);
