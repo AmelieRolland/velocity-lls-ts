@@ -72,8 +72,8 @@ export const presenceForAllUsers = async () => {
 
         for (const user of usersTech) {
             const userLeaves: UserLeaves = await getLeavesByUserId(user.id)
-           if (userLeaves.data.items.length > 0){
-            const totalAbsences = userLeaves?.data?.items?.length / 2
+           if (userLeaves?.data?.items?.length > 0){
+            const totalAbsences = userLeaves.data.items.length / 2
             const presenceDays = 10 - totalAbsences
             console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours sur 10`)
            }
@@ -121,7 +121,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
                         const formatDate = dayjs(date).format('DD/MM/YYYY')
 
-                        absences.push(`${formatDate}  ${(!(amLeave && pmLeave) ? (amLeave ? '- Matin' : '- Après-midi'): '')}`)
+                        absences.push(`${formatDate} ${(!(amLeave && pmLeave) ? (amLeave ? '- Matin' : '- Après-midi'): '')}`)
                         
                     }
                     absentUsers.push({
@@ -196,9 +196,11 @@ export const getSquadAbsenceData = async (squad: Squad) => {
             }
         }
         const totalDaysAvailable = totalDevelopers * totalDays
+        if(totalDaysAvailable > 0 && totalPresenceDays > 0){
         const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100
 
         return { squadName: squad.name, globalPresenceRate, absences }
+        }
     
     } catch (error) {
         console.error(`Erreur lors de la récupération des données d'absences pour la squad : ${error}`)
