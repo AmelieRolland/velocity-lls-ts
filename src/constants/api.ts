@@ -65,7 +65,7 @@ export const getSquad = (squad: Squad): Promise<Users> => {
 }
 
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
-    return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,${sprintStartQ},${sprintEndQ}`
+    return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date&leavePeriod.ownerId=${id}&date=between,${sprintStartQ},${sprintEndQ}`
     ).then(response => response.data
     ).catch(error => {
         console.error(`Une erreur est survenue : ${error}`)
@@ -83,7 +83,7 @@ export const presenceForAllUsers = async () => {
             if (userLeaves.data.items.length > 0) {
                 const totalAbsences = userLeaves?.data?.items?.length / 2
                 const presenceDays = 10 - totalAbsences
-                console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours sur 10`)
+                console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jour(s) sur 10`)
             }
         }
     } catch (error) {
@@ -236,7 +236,7 @@ export const getGlobalMessage = async () => {
                 if (absences?.length) {
                     console.log(`Absences à prévoir :`)
                     absences.forEach(absence => {
-                        console.log(`   👤 ${absence.userName} : ${absence.daysAbsent} jours`)
+                        console.log(`   👤 ${absence.userName} : ${absence.daysAbsent} jour(s)`)
                     })
                 } else {
                     console.log(`Absences à prévoir : \nAucune! votre équipe est au complet 🤗`)
