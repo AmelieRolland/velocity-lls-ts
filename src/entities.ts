@@ -13,7 +13,7 @@ export interface Users {
 
 export interface Squad {
     name: string;
-    userIds: number[];
+    userIds: User['id'][];
 }
 
 export interface AuthorizedActions {
@@ -26,23 +26,39 @@ export interface LeavePeriod {
     isConfirmed: boolean;
 }
 
+export interface LeaveItem {
+    leavePeriod: LeavePeriod;
+    isAM: boolean;
+    date: string;
+    color: string;
+    isRemoteWork: boolean;
+    isRealLeave: boolean;
+    leaveAccount: LeaveAccount;
+}
+
+export interface LeaveAccount {
+    id: number;
+    name: string;
+    i18nLabels: [];
+    isRemoteWork: boolean;
+}
 export interface UserLeaves {
     data: {
-        items: [
-            {
-            leavePeriod: LeavePeriod,
-            isAM: boolean,
-            date: string,
-            color: string,
-            isRemoteWork: boolean,
-            isRealLeave: boolean,
-            leaveAccount: {
-                id: number;
-                name: string;
-                i18nLabels: [];
-                isRemoteWork: boolean;
-
-            }
-    }]
+        items: LeaveItem[];
     }
+}
+
+export interface DateLeave { 
+    date: string,
+    name: string,
+    ownerId: number,
+    am: {
+        isOff: boolean,
+    },
+    pm: {
+        isOff: boolean,
+    }
+}
+export interface GroupedByDate {
+    date: LeaveItem[];
 }

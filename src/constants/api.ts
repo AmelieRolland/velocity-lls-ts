@@ -1,7 +1,8 @@
-import { Squad, UserLeaves, Users } from '@/entities.js';
+import { DateLeave, GroupedByDate, LeaveItem, LeavePeriod, Squad, UserLeaves, Users } from '@/entities.js';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dotenv/config';
+import _ from 'lodash';
 
 
 const API_KEY = process.env.REACT_APP_API_KEY;
@@ -58,15 +59,15 @@ export const allTechUsers = (): Promise<Users> => {
 
 //personnes dans une squad :
 
-export const getSquad = () => {
-    return axios.get(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=lastName,firstName&population.userIds=${squadDoc.userIds}`, {
+export const getSquad = (squad: Squad): Promise<Users> => {
+    return axios.get(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=lastName,firstName&population.userIds=${squad.userIds}`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
         }
     }).then(response => {
-        const inSquad: Users = response.data;
-        console.log(inSquad);
+        const inSquad = response.data;
+        return inSquad
     })
         .catch(error => {
             console.error(`Une erreur est survenue : ${error}`);
@@ -77,7 +78,25 @@ export const getSquad = () => {
 //absences et présences par id
 
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
-    return axios.get<UserLeaves>(`${BASE_URL}/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-08-19,2024-08-30`, {
+    return axios.get<UserLeaves>(`${BASE_URL}/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-08-01,2024-08-10`, {
+        headers: {
+            'Authorization': `lucca application=${API_KEY}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => {
+            return response.data;
+        })
+        .catch(error => {
+            console.error(`Une erreur est survenue : ${error}`);
+            throw error;
+        });
+}
+
+//requête entrées de dates
+
+export const dateLeave = (id: number): Promise<DateLeave[]> => {
+    return axios.get<DateLeave[]>(`${BASE_URL}/timmi-absences/api/planning/v1.0/userDates?owner.id=${id}&date=between,2024-08-01,2024-08-10&amOrPmIsOff=true`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
@@ -99,9 +118,9 @@ export const presenceForAllUsers = async () => {
 
         for (const user of usersTech) {
             const userLeaves: UserLeaves = await getLeavesByUserId(user.id);
-            const totalAbsences: number = userLeaves.data.items.length / 2;
-            const presenceDays: number = 10 - totalAbsences;
-            console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours`);
+            const totalAbsences = userLeaves.data.items.length / 2;
+            const presenceDays = 10 - totalAbsences;
+            console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jours sur 10`);
         }
     } catch (error) {
         console.error(`Une erreur est survenue : ${error}`);
@@ -119,35 +138,40 @@ export const getLeavesBySquad = async (squad: Squad) => {
             const absenceDays = leavesData.data.items.length / 2;
             const presenceDays = totalDays - absenceDays;
 
+            const groupedByDate: GroupedByDate = _.groupBy(leavesData.data.items, 'date');
+
             const user = (await allTechUsers()).items.find(user => user.id === userId);
             if (user) {
                 console.log(`${user.firstName} ${user.lastName} sera présent(e) ${presenceDays} jours sur 10`);
             }
-            if (user && leavesData.data.items.length > 0) {
+            if (user && Object.keys(groupedByDate).length > 0) {
                 console.log(`Jours d'absence pour ${user.firstName} ${user.lastName}:`);
-                const allDay: string[] = [];
-                leavesData.data.items.forEach(item => {
-                    allDay.push(item.date);
-                    
-                    const am = item.isAM;
-                });
-                    const uniqueDay = allDay.filter((obj, index, self) => self.findIndex(o => JSON.stringify(o) === JSON.stringify(obj)) === index);
-                    uniqueDay.forEach(day =>{
-                        console.log((dayjs(day).format(`DD/MM/YYYY`)));
 
-                    })
+                for (const date in groupedByDate) {
+                    const items: LeaveItem[] = groupedByDate[date];
+                    const amLeave: LeaveItem = items.find(item => item.isAM === true)!;
+                    const pmLeave: LeaveItem = items.find(item => item.isAM === false)!;
+
+                    if (amLeave && pmLeave) {
+                        console.log(dayjs(date).format('DD/MM/YYYY'));
+                    } else if (amLeave) {
+                        console.log(`${dayjs(date).format('DD/MM/YYYY')} - Matin`);
+                    } else if (pmLeave) {
+                        console.log(`${dayjs(date).format('DD/MM/YYYY')} - Après-midi`);
+                    }
+                }
             }
 
             if (user && leavesData.data.items.length >= 10 * 2) {
                 console.log(`${user.firstName} ${user.lastName} sera absent sur la durée de ce sprint`)
 
             }
-
         }
     } catch (error) {
         console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);
     }
 };
+
 
 
 

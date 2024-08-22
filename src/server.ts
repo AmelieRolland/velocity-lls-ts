@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from "express"
 import "dotenv/config"
-import { hello } from "@/constants/message.js"
-import { allTechUsers, archi, devOps, getLeavesBySquad, getSquad, presenceForAllUsers, squadAcc, squadCom, squadDoc} from "./constants/api.js"
+import { allTechUsers, archi, dateLeave, devOps, getLeavesBySquad, getLeavesByUserId, getSquad, presenceForAllUsers, squadAcc, squadCom, squadDoc} from "./constants/api.js"
 
 const app = express()
 const PORT = process.env.PORT || 3002
@@ -26,11 +25,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 
 
-
+// getLeavesByUserId(2);
 // allTechUsers();
-// getSquad();
+// getSquad(squadDoc);
 // presenceForAllUsers();
 getLeavesBySquad(squadDoc);
+// dateLeave(39);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`)
