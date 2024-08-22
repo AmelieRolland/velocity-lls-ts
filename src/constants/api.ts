@@ -30,11 +30,14 @@ export const devOps: Squad = {
     userIds: [30]
 };
 export const totalDays = 10
-export const sprintStart = dayjs().startOf('date').format('YYYY-MM-DD')
-export const sprintEnd = dayjs().endOf('date').add(11, 'day').format('YYYY-MM-DD')
 
-console.log(sprintStart)
-console.log(sprintEnd)
+// date format for Queries
+export const sprintStartQ = dayjs().startOf('date').format('YYYY-MM-DD')
+export const sprintEndQ = dayjs().endOf('date').add(11, 'day').format('YYYY-MM-DD')
+
+// date format for Display
+export const sprintStartD = dayjs().startOf('date').format('DD/MM/YYYY')
+export const sprintEndD = dayjs().endOf('date').add(11, 'day').format('DD/MM/YYYY')
 
 
 //All users in TECH + PRODUCT + QA
@@ -62,7 +65,7 @@ export const getSquad = (squad: Squad): Promise<Users> => {
 }
 
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
-    return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,${sprintStart},${sprintEnd}`
+    return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,${sprintStartQ},${sprintEndQ}`
     ).then(response => response.data
     ).catch(error => {
         console.error(`Une erreur est survenue : ${error}`)
@@ -140,7 +143,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
             }
             const totalDaysAvailable = totalDevelopers * totalDays;
             const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100;
-            console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ${sprintStart} au ${sprintEnd}\n`);
+            console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
             console.log(`\nSalut, ${squad.name} !`);
 
             if (totalDaysAvailable) {
@@ -173,7 +176,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
         console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`)
         throw error
     }
-};
+}
 
 // Creation of an array with absences and presences by squad, that will be displayed in the global message :
 
@@ -209,45 +212,41 @@ export const getSquadAbsenceData = async (squad: Squad) => {
             console.error(`Erreur lors de la récupération des données d'absence pour la squad : ${error}`)
             throw error
         }
-    };
+    }
+}
 
     // one message for all :
 
-    export const getGlobalMessage = async () => {
-        try {
-            console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ---- au -----\n`)
+export const getGlobalMessage = async () => {
+    try {
+        console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ${sprintStartD} au ${sprintEndD}\n`)
 
-            const squads = [squadDoc, squadAcc, squadCom, teamQA, archi, devOps]
-            for (const squad of squads) {
-                if (squad.userIds.length > 0) {
-                    const squadAbsenceData = await getSquadAbsenceData(squad)
+        const squads = [squadDoc, squadAcc, squadCom, teamQA, archi, devOps]
+        for (const squad of squads) {
+            if (squad.userIds.length > 0) {
+                const squadAbsenceData = await getSquadAbsenceData(squad)
 
-                    const squadName = squadAbsenceData?.squadName
-                    const globalPresenceRate = squadAbsenceData?.globalPresenceRate
-                    const absences = squadAbsenceData?.absences
+                const squadName = squadAbsenceData?.squadName
+                const globalPresenceRate = squadAbsenceData?.globalPresenceRate
+                const absences = squadAbsenceData?.absences
 
-                    console.log(`\n ${squadName}`)
-                    console.log(`Taux de présence global : ${globalPresenceRate?.toFixed(0)}%`)
+                console.log(`\n ${squadName}`)
+                console.log(`Taux de présence global : ${globalPresenceRate?.toFixed(0)}%`)
 
-                    if (absences?.length) {
-                        console.log(`Absences à prévoir :`)
-                        absences.forEach(absence => {
-                            console.log(`   👤 ${absence.userName} : ${absence.daysAbsent} jours`)
-                        })
-                    } else {
-                        console.log(`Absences à prévoir : \nAucune! votre équipe est au complet 🤗`)
-                    }
+                if (absences?.length) {
+                    console.log(`Absences à prévoir :`)
+                    absences.forEach(absence => {
+                        console.log(`   👤 ${absence.userName} : ${absence.daysAbsent} jours`)
+                    })
+                } else {
+                    console.log(`Absences à prévoir : \nAucune! votre équipe est au complet 🤗`)
+                }
 
-                } else { console.log(`\n${squad.name} n'est pas disponible sur cette période`) }
-            }
-        } catch (error) {
-            console.error(`Erreur lors de la génération du message global : ${error}`)
-            throw error
+            } else { console.log(`\n${squad.name} n'est pas disponible sur cette période`) }
         }
+    } catch (error) {
+        console.error(`Erreur lors de la génération du message global : ${error}`)
+        throw error
     }
-
-
-
-
-
+}
 
