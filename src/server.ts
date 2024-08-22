@@ -29,9 +29,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // allTechUsers();
 // getSquad(teamQA);
 // presenceForAllUsers();
-// getLeavesBySquad(devOps);
+getLeavesBySquad(squadCom);
 // dateLeave();
-getGlobalMessage();
+// getGlobalMessage();
 // getSquadAbsenceData(teamQA);
 
 app.listen(PORT, () => {

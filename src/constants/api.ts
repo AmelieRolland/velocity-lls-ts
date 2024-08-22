@@ -119,14 +119,8 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
                         const formatDate = dayjs(date).format('DD/MM/YYYY')
 
-                        if (amLeave && pmLeave) {
-                            absences.push(formatDate);
-                        } else if (amLeave) {
-                            absences.push(`${formatDate} - Matin`)
-                        } else if (pmLeave) {
-                            absences.push(`${formatDate} - Après-midi`)
-
-                        }
+                        absences.push(`${formatDate}  ${(!(amLeave && pmLeave) ? (amLeave ? '- Matin' : '- Après-midi'): '')}`)
+                        
                     }
                     absentUsers.push({
                         userName: `${user.firstName} ${user.lastName}`,
@@ -161,7 +155,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
             if (user.presenceDays === 0) {
                 console.log(`${user.userName} sera absent sur toute la durée de ce sprint\n`)
             } else {
-                console.log(`${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absence à prévoir :`)
+                console.log(`${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absences à prévoir :`)
                 user.absences.forEach(absence => {
                     console.log(`- ${absence}`)
                 })
