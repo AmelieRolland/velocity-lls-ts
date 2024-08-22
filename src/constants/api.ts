@@ -29,6 +29,7 @@ export const devOps: Squad = {
     name: "🛠️ Devops",
     userIds: [30]
 };
+export const techDep = [9, 10, 12]
 export const totalDays = 10
 
 // date format for Queries
@@ -42,7 +43,7 @@ export const sprintEndD = dayjs().endOf('date').add(11, 'day').format('DD/MM/YYY
 //All users in TECH + PRODUCT + QA
 
 export const allTechUsers = (): Promise<Users> => {
-    return axiosConfig.get<Users>('/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=9, 10, 12'
+    return axiosConfig.get<Users>(`/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=${techDep}`
     )
         .then(response => response.data
         ).catch(error => {
