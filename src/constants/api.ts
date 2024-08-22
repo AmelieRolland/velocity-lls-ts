@@ -27,9 +27,9 @@ export const archi: Squad = {
 }
 export const devOps: Squad = {
     name: "🛠️ Devops",
-    userIds: []
+    userIds: [31]
 }
-export const totalDays = 5
+export const totalDays = 10
 
 
 //All users in TECH + PRODUCT + QA
