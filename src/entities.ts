@@ -48,16 +48,16 @@ export interface UserLeaves {
     }
 }
 
+export interface IsOff {
+    isOff :boolean
+}
+
 export interface DateLeave { 
     date: string
     name: string
     ownerId: number
-    am: {
-        isOff: boolean
-    },
-    pm: {
-        isOff: boolean
-    }
+    am: IsOff
+    pm: IsOff
 }
 export interface GroupedByDate {
     date: LeaveItem[]
