@@ -27,7 +27,7 @@ export const archi: Squad = {
 }
 export const devOps: Squad = {
     name: "🛠️ Devops",
-    userIds: [31]
+    userIds: []
 }
 export const totalDays = 10
 
@@ -178,7 +178,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
 export const getSquadAbsenceData = async (squad: Squad) => {
 
-    if(squad.userIds.length > 0){
+    if(squad.userIds.length){
 
     try {
         const totalDevelopers = squad.userIds.length
@@ -205,7 +205,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
         return { squadName: squad.name, globalPresenceRate, absences }
     
     } catch (error) {
-        console.error(`Erreur lors de la récupération des données d'absence pour la squad : ${error}`)
+        console.error(`Erreur lors de la récupération des données d'absences pour la squad : ${error}`)
         throw error
     }
 }
@@ -238,7 +238,7 @@ export const getGlobalMessage = async () => {
                 console.log(`Absences à prévoir : \nAucune! votre équipe est au complet 🤗`)
             }
             
-        }else{console.log(`\n${squad.name} n'est pas dispo`)} }
+        }else{console.log(`\n${squad.name} n'est pas disponible sur cette période`)} }
     } catch (error) {
         console.error(`Erreur lors de la génération du message global : ${error}`)
         throw error
