@@ -49,16 +49,26 @@ export interface UserLeaves {
 }
 
 export interface DateLeave { 
-    date: string,
-    name: string,
-    ownerId: number,
+    date: string
+    name: string
+    ownerId: number
     am: {
-        isOff: boolean,
+        isOff: boolean
     },
     pm: {
-        isOff: boolean,
+        isOff: boolean
     }
 }
 export interface GroupedByDate {
-    date: LeaveItem[];
+    date: LeaveItem[]
+}
+export interface AbsentUsers {
+    userName: string
+    presenceDays: number
+    absences: string[]
+}
+
+export interface Absences {
+    userName: string
+    daysAbsent: number
 }

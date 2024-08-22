@@ -1,13 +1,13 @@
 import express, { Request, Response, NextFunction } from "express"
 import "dotenv/config"
-import { allTechUsers, archi, dateLeave, devOps, getLeavesBySquad, getLeavesByUserId, getSquad, presenceForAllUsers, squadAcc, squadCom, squadDoc} from "./constants/api.js"
+import { allTechUsers, archi, dateLeave, devOps, getGlobalMessage, getLeavesBySquad, getLeavesByUserId, getSquad, getSquadAbsenceData, presenceForAllUsers, squadAcc, squadCom, squadDoc, teamQA} from "./constants/api.js"
 
 const app = express()
 const PORT = process.env.PORT || 3002
 
 app.get("/", (req, res, next) => {
   try {
-    return res.send({ message: hello })
+    return res.send({ message: 'hello '})
   } catch (error) {
     return next(error)
   }
@@ -25,13 +25,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 
 
-// getLeavesByUserId(2);
+// getLeavesByUserId(8);
 // allTechUsers();
-// getSquad(squadDoc);
+// getSquad(teamQA);
 // presenceForAllUsers();
-getLeavesBySquad(squadDoc);
-// dateLeave(39);
+// getLeavesBySquad(squadCom);
+// dateLeave();
+getGlobalMessage();
+// getSquadAbsenceData(teamQA);
 
 app.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`)
 })

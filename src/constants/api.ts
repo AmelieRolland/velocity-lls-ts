@@ -1,4 +1,4 @@
-import { DateLeave, GroupedByDate, LeaveItem, LeavePeriod, Squad, UserLeaves, Users } from '@/entities.js';
+import { Absences, AbsentUsers, DateLeave, GroupedByDate, LeaveItem, LeavePeriod, Squad, UserLeaves, Users } from '@/entities.js';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import 'dotenv/config';
@@ -11,27 +11,27 @@ const BASE_URL = `https://lelivrescolaire.ilucca.net`;
 // users per squad
 
 export const squadDoc: Squad = {
-    name: "Squad Documentation",
+    name: "✨ Squad Documentation",
     userIds: [39, 58, 57]
 };
 export const squadAcc: Squad = {
-    name: "Squad Accompagnement",
+    name: "🌈 Squad Accompagnement",
     userIds: [5, 66, 2]
 };
 export const squadCom: Squad = {
-    name: "Squad Communauté",
+    name: "🦄 Squad Communauté",
     userIds: [10, 71, 25, 29, 74, 14]
 };
 export const teamQA: Squad = {
-    name: "Team QA",
-    userIds: [8, 17, 49]
+    name: "🔬 Team QA",
+    userIds: [49, 8, 17]
 };
 export const archi: Squad = {
-    name: "Architecte",
+    name: "👷 Architecte",
     userIds: [51]
 };
 export const devOps: Squad = {
-    name: "Devops",
+    name: "🛠️ Devops",
     userIds: [30]
 };
 export const totalDays = 10;
@@ -40,7 +40,7 @@ export const totalDays = 10;
 //Liste de tous les users dans Tech
 
 export const allTechUsers = (): Promise<Users> => {
-    return axios.get<Users>(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=9, 12`, {
+    return axios.get<Users>(`${BASE_URL}/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=9, 10, 12`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ export const getSquad = (squad: Squad): Promise<Users> => {
 //absences et présences par id
 
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
-    return axios.get<UserLeaves>(`${BASE_URL}/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-08-01,2024-08-10`, {
+    return axios.get<UserLeaves>(`${BASE_URL}/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date,color,isRemoteWork,isRealLeave,leaveAccount[id,name,i18nLabels[name,cultureCodeIso6391]isRemoteWork]&leavePeriod.ownerId=${id}&date=between,2024-07-29,2024-08-09`, {
         headers: {
             'Authorization': `lucca application=${API_KEY}`,
             'Content-Type': 'application/json'
@@ -130,48 +130,143 @@ export const presenceForAllUsers = async () => {
 export const getLeavesBySquad = async (squad: Squad) => {
 
     try {
-        console.log(`Bienvenue dans ce nouveau sprint! \nVoici les présences et absences prévues du -- au -- \n`)
-        console.log(`${squad.name}:`);
+        const totalDevelopers = squad.userIds.length;
+        let totalPresenceDays = 0;
+        let totalAbsenceDays = 0;
+        const fullyPresentUsers: string[] = [];
+        const absentUsers: AbsentUsers[] = [];
+
+        for (const userId of squad.userIds) {
+            const leavesData = await getLeavesByUserId(userId);
+            const absenceDays = leavesData.data.items.length / 2;
+            const presenceDays = totalDays - absenceDays;
+            const presenceRate = (presenceDays / totalDays) * 100;
+
+            totalPresenceDays += presenceDays;
+            totalAbsenceDays += absenceDays;
+
+            const groupedByDate: GroupedByDate = _.groupBy(leavesData.data.items, 'date');
+
+            const user = (await allTechUsers()).items.find(user => user.id === userId);
+            if (user) {
+                if (presenceDays === totalDays) {
+                    fullyPresentUsers.push(`${user.firstName} ${user.lastName}`);
+                } else if (presenceDays < totalDays) {
+                    const absences: string[] = [];
+                    for (const date in groupedByDate) {
+                        const items: LeaveItem[] = groupedByDate[date];
+                        const amLeave: LeaveItem = items.find(item => item.isAM === true)!;
+                        const pmLeave: LeaveItem = items.find(item => item.isAM === false)!;
+
+                        if (amLeave && pmLeave) {
+                            absences.push(dayjs(date).format('DD/MM/YYYY'));
+                        } else if (amLeave) {
+                            absences.push(`${dayjs(date).format('DD/MM/YYYY')} - Matin`);
+                        } else if (pmLeave) {
+                            absences.push(`${dayjs(date).format('DD/MM/YYYY')} - Après-midi`);
+                        }
+                    }
+                    absentUsers.push({
+                        userName: `${user.firstName} ${user.lastName}`,
+                        presenceDays,
+                        absences
+                    });
+                }
+            }
+
+        }
+        const totalDaysAvailable = totalDevelopers * totalDays;
+            const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100;
+            console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ---- au -----\n`);
+            console.log(`\nSalut, ${squad.name} !`);
+            console.log(`Le taux de présence de votre équipe est de ${globalPresenceRate.toFixed(0)}% pour ce sprint.\n`);
+
+            if (fullyPresentUsers.length) {
+                console.log(`${fullyPresentUsers.length} dev(s) présent(s) sur toute la durée du sprint :`);
+                fullyPresentUsers.forEach(user => {
+                    console.log(`- ${user}`);
+                });
+                console.log('\n');
+            }
+
+
+            absentUsers.forEach(user => {
+                if (user.presenceDays === 0){
+                    console.log(`${user.userName} sera absent sur toute la durée de ce sprint\n`)
+                } else {
+                console.log(`${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absence à prévoir :`);
+                user.absences.forEach(absence => {
+                    console.log(`- ${absence}`);
+                });
+                console.log('\n');
+            }
+            });
+    } catch (error) {
+        console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);
+    }
+};
+
+export const getSquadAbsenceData = async (squad: Squad) => {
+    try {
+        const totalDevelopers = squad.userIds.length;
+        let totalPresenceDays = 0;
+        let totalAbsenceDays = 0;
+        const absences: Absences[] = [];
 
         for (const userId of squad.userIds) {
             const leavesData = await getLeavesByUserId(userId);
             const absenceDays = leavesData.data.items.length / 2;
             const presenceDays = totalDays - absenceDays;
 
-            const groupedByDate: GroupedByDate = _.groupBy(leavesData.data.items, 'date');
+            totalAbsenceDays += absenceDays;
+            totalPresenceDays += presenceDays;
 
             const user = (await allTechUsers()).items.find(user => user.id === userId);
-            if (user) {
-                console.log(`${user.firstName} ${user.lastName} sera présent(e) ${presenceDays} jours sur 10`);
-            }
-            if (user && Object.keys(groupedByDate).length > 0) {
-                console.log(`Jours d'absence pour ${user.firstName} ${user.lastName}:`);
-
-                for (const date in groupedByDate) {
-                    const items: LeaveItem[] = groupedByDate[date];
-                    const amLeave: LeaveItem = items.find(item => item.isAM === true)!;
-                    const pmLeave: LeaveItem = items.find(item => item.isAM === false)!;
-
-                    if (amLeave && pmLeave) {
-                        console.log(dayjs(date).format('DD/MM/YYYY'));
-                    } else if (amLeave) {
-                        console.log(`${dayjs(date).format('DD/MM/YYYY')} - Matin`);
-                    } else if (pmLeave) {
-                        console.log(`${dayjs(date).format('DD/MM/YYYY')} - Après-midi`);
-                    }
-                }
-            }
-
-            if (user && leavesData.data.items.length >= 10 * 2) {
-                console.log(`${user.firstName} ${user.lastName} sera absent sur la durée de ce sprint`)
-
+            if (user && absenceDays > 0) {
+                absences.push({ userName: `${user.firstName} ${user.lastName}`, daysAbsent: absenceDays });
             }
         }
+
+        const totalDaysAvailable = totalDevelopers * totalDays;
+        const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100;
+        
+        return { squadName: squad.name, globalPresenceRate, absences };
+
     } catch (error) {
-        console.error(`Erreur lors de la récupération des jours de présence pour la squad : ${error}`);
+        console.error(`Erreur lors de la récupération des données d'absence pour la squad : ${error}`);
     }
 };
 
+// one message for all :
+
+export const getGlobalMessage = async () => {
+    try {
+        console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ---- au -----\n`);
+
+        const squads = [squadDoc, squadAcc, squadCom, teamQA, archi, devOps];
+        for (const squad of squads) {
+            const squadAbsenceData = await getSquadAbsenceData(squad);
+
+            const squadName = squadAbsenceData?.squadName;
+            const globalPresenceRate = squadAbsenceData?.globalPresenceRate;
+            const absences = squadAbsenceData?.absences;
+
+            console.log(`\n ${squadName}`);
+            console.log(`Taux de présence global : ${globalPresenceRate?.toFixed(0)}%`);
+
+            if (absences?.length) {
+                console.log(`Absences à prévoir :`);
+                absences.forEach(absence => {
+                    console.log(`   👤 ${absence.userName} : ${absence.daysAbsent} jours`);
+                });
+            } else {
+                console.log(`Absences à prévoir : \nAucune! votre équipe est au complet 🤗`);
+            }
+        }
+    } catch (error) {
+        console.error(`Erreur lors de la génération du message global : ${error}`);
+    }
+}
 
 
 
