@@ -39,7 +39,6 @@ export const sprintEndQ = dayjs().endOf('date').add(11, 'day').format('YYYY-MM-D
 export const sprintStartD = dayjs().startOf('date').format('DD/MM/YYYY')
 export const sprintEndD = dayjs().endOf('date').add(11, 'day').format('DD/MM/YYYY')
 
-
 //All users in TECH + PRODUCT + QA
 
 export const allTechUsers = (): Promise<Users> => {
@@ -51,7 +50,6 @@ export const allTechUsers = (): Promise<Users> => {
             throw error
         })
 }
-
 
 //list the users in one squad
 
@@ -130,7 +128,6 @@ export const getLeavesBySquad = async (squad: Squad) => {
                             const formatDate = dayjs(date).format('DD/MM/YYYY')
 
                             absences.push(`${formatDate}  ${(!(amLeave && pmLeave) ? (amLeave ? '- Matin' : '- Après-midi') : '')}`)
-
                         }
                         absentUsers.push({
                             userName: `${user.firstName} ${user.lastName}`,
@@ -215,7 +212,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
     }
 }
 
-    // one message for all :
+// one message for all :
 
 export const getGlobalMessage = async () => {
     try {
