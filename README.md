@@ -12,8 +12,6 @@ This tool has been created to help Product Managers to become more aware of thei
 
 ### 1. Clone repo
 
-clone repo without commit history
-
 ```bash
 git clone https://github.com/AmelieRolland/velocity-lls-ts.git
 ```
