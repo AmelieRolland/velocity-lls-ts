@@ -10,39 +10,39 @@ dayjs.extend(weekOfYear);
 
 export const squadDoc: Squad = {
     name: "Squad Documentation",
-    userIds: [39, 58, 57]
+    userIds: [39, 58]
 }
 export const squadAcc: Squad = {
     name: "Squad Accompagnement",
-    userIds: [5, 66, 2]
+    userIds: [5, 66]
 }
 export const squadCom: Squad = {
     name: "Squad Communauté",
-    userIds: [10, 71, 25, 29, 74, 14]
+    userIds: [10, 71, 25, 29, 74]
 }
-export const teamQA: Squad = {
-    name: "Team QA",
-    userIds: [49, 8, 17]
-}
-export const archi: Squad = {
-    name: "Architecte",
-    userIds: [51]
-}
-export const devOps: Squad = {
-    name: "Devops",
-    userIds: [30]
-};
+// export const teamQA: Squad = {
+//     name: "Team QA",
+//     userIds: [49, 8, 17]
+// }
+// export const archi: Squad = {
+//     name: "Architecte",
+//     userIds: [51]
+// }
+// export const devOps: Squad = {
+//     name: "Devops",
+//     userIds: [30]
+// };
 export const techDep = [9, 10, 12]
 export const totalDays = 10
 
 // date format for Queries
-let sprintNumStart = 34
-let sprintNumEnd = 35
-export const sprintStartQ = dayjs().week(sprintNumStart).startOf('week').add(1, 'day').format('YYYY-MM-DD')
+let sprintNumStart = 32
+let sprintNumEnd = 33
+export const sprintStartQ = dayjs().week(sprintNumStart).startOf('week').add(3, 'day').format('YYYY-MM-DD')
 export const sprintEndQ = dayjs().week(sprintNumEnd).endOf('week').subtract(1, 'day').format('YYYY-MM-DD')
 
 // date format for Display
-export const sprintStartD = dayjs().week(sprintNumStart).startOf('week').add(1, 'day').format('DD/MM/YYYY')
+export const sprintStartD = dayjs().week(sprintNumStart).startOf('week').add(3, 'day').format('DD/MM/YYYY')
 export const sprintEndD = dayjs().week(sprintNumEnd).endOf('week').subtract(1, 'day').format('DD/MM/YYYY')
 
 //All users in TECH + PRODUCT + QA
@@ -51,6 +51,7 @@ export const allTechUsers = (): Promise<Users> => {
     return axiosConfig.get<Users>(`/timmi-absences/api/planning/v1.0/users?limit=50&page=1&fields.root=count&sort=departmentHierarchyId,lastName,firstName&population.departmentWithSubIds=${techDep}`
     )
         .then(response => response.data
+
         ).catch(error => {
             console.error(`Une erreur est survenue : ${error}`)
             throw error
@@ -66,6 +67,17 @@ export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
     });
 }
 
+export const getDateLeave = (): Promise<DateLeave[]> => {
+    return axiosConfig.get<DateLeave[]>(`/timmi-absences/api/planning/v1.0/userDates?owner.id=1&date=between,${sprintStartQ},${sprintEndQ}&amOrPmIsOff=true`
+    ).then(response => response.data
+
+    )
+        .catch(error => {
+            console.error(`Une erreur est survenue : ${error}`);
+            throw error;
+        });
+}
+
 // Absences and presences sorted by Squad
 
 export const getLeavesBySquad = async (squad: Squad) => {
@@ -76,6 +88,9 @@ export const getLeavesBySquad = async (squad: Squad) => {
         let totalAbsenceDays = 0
         const fullyPresentUsers: string[] = []
         const absentUsers: AbsentUsers[] = []
+
+        const daysOff = await getDateLeave()
+        const businessDays = totalDays - daysOff.length
 
         if (squad.userIds.length > 0) {
 
@@ -88,6 +103,8 @@ export const getLeavesBySquad = async (squad: Squad) => {
                 totalAbsenceDays += absenceDays
 
                 const groupedByDate: GroupedByDate = _.groupBy(leavesData.data.items, 'date')
+
+
 
                 const user = (await allTechUsers()).items.find(user => user.id === userId)
                 if (user) {
@@ -120,11 +137,12 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
             if (totalDaysAvailable) {
 
-                console.log(`Total de jours disponibles : ${totalPresenceDays}\n`);
+                console.log(`\nTotal de jours disponibles : ${totalPresenceDays}`);
             }
             else {
                 console.log(`${squad.name} n'est pas disponible sur cette période`)
             }
+            console.log(`Nombre de journées ouvrables : ${businessDays}\n`)
             if (fullyPresentUsers.length) {
                 console.log(`${fullyPresentUsers.length} dev(s) présent(s) sur toute la durée du sprint :`)
                 fullyPresentUsers.forEach(user => {
@@ -161,6 +179,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
             let totalAbsenceDays = 0
             const absences: Absences[] = []
 
+
             for (const userId of squad.userIds) {
                 const leavesData = await getLeavesByUserId(userId)
                 const absenceDays = leavesData?.data?.items?.length / 2
@@ -187,9 +206,12 @@ export const getSquadAbsenceData = async (squad: Squad) => {
 
 export const getGlobalMessage = async () => {
     try {
+        const daysOff = await getDateLeave()
+        const businessDays = totalDays - daysOff.length
         console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
+        console.log(`Nombre de journées ouvrables : ${businessDays}\n`)
 
-        const squads = [squadDoc, squadAcc, squadCom, teamQA, archi, devOps]
+        const squads = [squadDoc, squadAcc, squadCom]
         for (const squad of squads) {
             if (squad.userIds.length > 0) {
                 const squadAbsenceData = await getSquadAbsenceData(squad)
@@ -199,7 +221,8 @@ export const getGlobalMessage = async () => {
                 const presences = squadAbsenceData?.totalPresenceDays
 
                 console.log(`\n -> ${squadName}`)
-                console.log(`Total de jours disponibles : ${presences}`)
+                console.log(`\nTotal de jours disponibles : ${presences}`)
+
 
                 if (absences?.length) {
                     console.log(`Absences à prévoir :`)
