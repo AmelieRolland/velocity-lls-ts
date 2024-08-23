@@ -9,27 +9,27 @@ dayjs.extend(weekOfYear);
 
 
 export const squadDoc: Squad = {
-    name: "✨ Squad Documentation",
+    name: "Squad Documentation",
     userIds: [39, 58, 57]
 }
 export const squadAcc: Squad = {
-    name: "🌈 Squad Accompagnement",
+    name: "Squad Accompagnement",
     userIds: [5, 66, 2]
 }
 export const squadCom: Squad = {
-    name: "🦄 Squad Communauté",
+    name: "Squad Communauté",
     userIds: [10, 71, 25, 29, 74, 14]
 }
 export const teamQA: Squad = {
-    name: "🔬 Team QA",
+    name: "Team QA",
     userIds: [49, 8, 17]
 }
 export const archi: Squad = {
-    name: "👷 Architecte",
+    name: "Architecte",
     userIds: [51]
 }
 export const devOps: Squad = {
-    name: "🛠️ Devops",
+    name: "Devops",
     userIds: [30]
 };
 export const techDep = [9, 10, 12]
@@ -145,9 +145,8 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
             }
             const totalDaysAvailable = totalDevelopers * totalDays;
-            const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100;
-            console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
-            console.log(`\nSalut, ${squad.name} !`);
+            console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
+            console.log(`\n✨ Salut, ${squad.name} ! ✨`);
 
             if (totalDaysAvailable) {
 
@@ -206,10 +205,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
                     absences.push({ userName: `${user.firstName} ${user.lastName}`, daysAbsent: absenceDays })
                 }
             }
-            const totalDaysAvailable = totalDevelopers * totalDays
-            const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100
-
-            return { squadName: squad.name, globalPresenceRate, absences, totalPresenceDays }
+            return { squadName: squad.name, absences, totalPresenceDays }
 
         } catch (error) {
             console.error(`Erreur lors de la récupération des données d'absence pour la squad : ${error}`)
@@ -222,7 +218,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
 
 export const getGlobalMessage = async () => {
     try {
-        console.log(`🚀 Nouveau Sprint, Let's Go ! \nPériode du : ${sprintStartD} au ${sprintEndD}\n`)
+        console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
 
         const squads = [squadDoc, squadAcc, squadCom, teamQA, archi, devOps]
         for (const squad of squads) {
@@ -230,11 +226,10 @@ export const getGlobalMessage = async () => {
                 const squadAbsenceData = await getSquadAbsenceData(squad)
 
                 const squadName = squadAbsenceData?.squadName
-                const globalPresenceRate = squadAbsenceData?.globalPresenceRate
                 const absences = squadAbsenceData?.absences
                 const presences = squadAbsenceData?.totalPresenceDays
 
-                console.log(`\n ${squadName}`)
+                console.log(`\n -> ${squadName}`)
                 console.log(`Total de jours disponibles : ${presences}`)
 
                 if (absences?.length) {
