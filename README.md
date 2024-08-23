@@ -32,6 +32,7 @@ REACT_APP_LUCCA_API_KEY=<CleLucca>
 
 ```bash
 npm run dev
+```
 
 ## Available scripts
 
@@ -42,5 +43,5 @@ npm run dev
 - `npm run lint:fix` — Fix autofixable ESLint problem.
 - `npm run format:all` — Format code using Prettier for all files.
 - `npm run format:check` — Check code format using prettier.
-```
+
 
