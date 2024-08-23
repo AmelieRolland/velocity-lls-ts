@@ -15,7 +15,7 @@ This tool has been created to help Product Managers to become more aware of thei
 clone repo without commit history
 
 ```bash
-git clone
+git clone https://github.com/AmelieRolland/velocity-lls-ts.git
 ```
 
 ### 2. Install dependencies
