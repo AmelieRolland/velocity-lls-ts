@@ -1,13 +1,26 @@
 import express, { Request, Response, NextFunction } from "express"
 import "dotenv/config"
-import { allTechUsers, archi, devOps, getDateLeave, getGlobalMessage, getLeavesBySquad, getLeavesByUserId, getSquadAbsenceData, squadAcc, squadCom, squadDoc, teamQA} from "./constants/api.js"
+import {
+  allTechUsers,
+  archi,
+  devOps,
+  getDateLeave,
+  getGlobalMessage,
+  getLeavesBySquad,
+  getLeavesByUserId,
+  getSquadAbsenceData,
+  squadAcc,
+  squadCom,
+  squadDoc,
+  teamQA,
+} from "./constants/api.js"
 
 const app = express()
 const PORT = process.env.PORT || 3002
 
 app.get("/", (req, res, next) => {
   try {
-    return res.send({ message: 'hello '})
+    return res.send({ message: "hello " })
   } catch (error) {
     return next(error)
   }
@@ -23,15 +36,12 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   })
 })
 
-
-
 // getLeavesByUserId(57);
 // allTechUsers();
 // getSquad(teamQA);
 // getLeavesBySquad(squadAcc);
 // dateLeave();
-getGlobalMessage();
+getGlobalMessage()
 // getSquadAbsenceData(teamQA);
 
-app.listen(PORT, () => {
-})
+app.listen(PORT, () => {})

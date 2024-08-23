@@ -1,17 +1,13 @@
-import axios from 'axios';
-import 'dotenv/config';
+import axios from "axios"
+import "dotenv/config"
 
-const API_KEY = process.env.REACT_APP_API_KEY;
+const API_KEY = process.env.REACT_APP_LUCCA_API_KEY
 const instance = axios.create({
-    baseURL: 'https://lelivrescolaire.ilucca.net'
+  baseURL: "https://lelivrescolaire.ilucca.net",
+})
 
-});
-    
-instance.defaults.headers.common['Authorization'] = `lucca application=${API_KEY}`;
-instance.defaults.headers.common['Content-Type'] = 'application/json';
+instance.defaults.headers.common["Authorization"] =
+  `lucca application=${API_KEY}`
+instance.defaults.headers.common["Content-Type"] = "application/json"
 
-export default instance;
-
-            
-
-
+export default instance
