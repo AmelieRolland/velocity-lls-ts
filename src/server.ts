@@ -28,10 +28,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // getLeavesByUserId(8);
 // allTechUsers();
 // getSquad(teamQA);
-// presenceForAllUsers();
-getLeavesBySquad(squadAcc);
+// getLeavesBySquad(squadAcc);
 // dateLeave();
-// getGlobalMessage();
+getGlobalMessage();
 // getSquadAbsenceData(teamQA);
 
 app.listen(PORT, () => {

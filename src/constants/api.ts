@@ -57,17 +57,6 @@ export const allTechUsers = (): Promise<Users> => {
         })
 }
 
-//list the users in one squad
-
-export const getSquad = (squad: Squad): Promise<Users> => {
-    return axiosConfig.get(`/timmi-absences/api/planning/v1.0/users?limit=20&page=1&fields.root=count&sort=lastName,firstName&population.userIds=${squad.userIds}`
-    ).then(response => response.data
-    ).catch(error => {
-        console.error(`Une erreur est survenue : ${error}`)
-        throw error
-    })
-}
-
 export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
     return axiosConfig.get<UserLeaves>(`/api/v3/leaves?fields=leavePeriod[id,ownerId,isConfirmed],isAm,date&leavePeriod.ownerId=${id}&date=between,${sprintStartQ},${sprintEndQ}`
     ).then(response => response.data
@@ -75,25 +64,6 @@ export const getLeavesByUserId = (id: number): Promise<UserLeaves> => {
         console.error(`Une erreur est survenue : ${error}`)
         throw error
     });
-}
-
-export const presenceForAllUsers = async () => {
-    try {
-        const usersTechRes = await allTechUsers();
-        const usersTech = usersTechRes.items
-
-        for (const user of usersTech) {
-            const userLeaves: UserLeaves = await getLeavesByUserId(user.id)
-            if (userLeaves.data.items.length > 0) {
-                const totalAbsences = userLeaves?.data?.items?.length / 2
-                const presenceDays = 10 - totalAbsences
-                console.log(`${user.firstName} ${user.lastName} sera présent ${presenceDays} jour(s) sur 10`)
-            }
-        }
-    } catch (error) {
-        console.error(`Une erreur est survenue : ${error}`);
-        throw error
-    }
 }
 
 // Absences and presences sorted by Squad
@@ -187,7 +157,6 @@ export const getSquadAbsenceData = async (squad: Squad) => {
     if (squad.userIds.length) {
 
         try {
-            const totalDevelopers = squad.userIds.length
             let totalPresenceDays = 0
             let totalAbsenceDays = 0
             const absences: Absences[] = []
