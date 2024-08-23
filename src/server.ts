@@ -29,7 +29,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // allTechUsers();
 // getSquad(teamQA);
 // presenceForAllUsers();
-getLeavesBySquad(squadCom);
+getLeavesBySquad(squadAcc);
 // dateLeave();
 // getGlobalMessage();
 // getSquadAbsenceData(teamQA);

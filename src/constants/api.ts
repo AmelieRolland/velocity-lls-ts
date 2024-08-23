@@ -151,7 +151,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
             if (totalDaysAvailable) {
 
-                console.log(`Le taux de présence de votre équipe est de ${globalPresenceRate.toFixed(0)}% pour ce sprint.\n`);
+                console.log(`Total de jours disponibles : ${totalPresenceDays}\n`);
             }
             else {
                 console.log(`${squad.name} n'est pas disponible sur cette période`)
@@ -209,7 +209,7 @@ export const getSquadAbsenceData = async (squad: Squad) => {
             const totalDaysAvailable = totalDevelopers * totalDays
             const globalPresenceRate = (totalPresenceDays / totalDaysAvailable) * 100
 
-            return { squadName: squad.name, globalPresenceRate, absences }
+            return { squadName: squad.name, globalPresenceRate, absences, totalPresenceDays }
 
         } catch (error) {
             console.error(`Erreur lors de la récupération des données d'absence pour la squad : ${error}`)
@@ -232,9 +232,10 @@ export const getGlobalMessage = async () => {
                 const squadName = squadAbsenceData?.squadName
                 const globalPresenceRate = squadAbsenceData?.globalPresenceRate
                 const absences = squadAbsenceData?.absences
+                const presences = squadAbsenceData?.totalPresenceDays
 
                 console.log(`\n ${squadName}`)
-                console.log(`Taux de présence global : ${globalPresenceRate?.toFixed(0)}%`)
+                console.log(`Total de jours disponibles : ${presences}`)
 
                 if (absences?.length) {
                     console.log(`Absences à prévoir :`)
