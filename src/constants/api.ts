@@ -132,7 +132,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
 
             }
             const totalDaysAvailable = totalDevelopers * totalDays;
-            console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
+            console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD} (${businessDays} jours ouvrés)\n`);
             console.log(`\n✨ Salut, ${squad.name} ! ✨`);
 
             if (totalDaysAvailable) {
@@ -142,7 +142,6 @@ export const getLeavesBySquad = async (squad: Squad) => {
             else {
                 console.log(`${squad.name} n'est pas disponible sur cette période`)
             }
-            console.log(`Nombre de journées ouvrables : ${businessDays}\n`)
             if (fullyPresentUsers.length) {
                 console.log(`${fullyPresentUsers.length} dev(s) présent(s) sur toute la durée du sprint :`)
                 fullyPresentUsers.forEach(user => {
@@ -208,8 +207,7 @@ export const getGlobalMessage = async () => {
     try {
         const daysOff = await getDateLeave()
         const businessDays = totalDays - daysOff.length
-        console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`);
-        console.log(`Nombre de journées ouvrables : ${businessDays}\n`)
+        console.log(`📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD} (${businessDays} jours ouvrés)\n`);
 
         const squads = [squadDoc, squadAcc, squadCom]
         for (const squad of squads) {
