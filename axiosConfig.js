@@ -10,8 +10,6 @@ const instance = axios.create({
 instance.defaults.headers.common['Authorization'] = `lucca application=${API_KEY}`;
 instance.defaults.headers.common['Content-Type'] = 'application/json';
 
-
-
 export default instance;
 
             
