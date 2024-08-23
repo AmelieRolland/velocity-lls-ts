@@ -16,10 +16,6 @@ export interface Squad {
     userIds: User['id'][]
 }
 
-export interface AuthorizedActions {
-    details: boolean
-}
-
 export interface LeavePeriod {
     id: number
     ownerId: number
@@ -33,31 +29,12 @@ export interface LeaveItem {
     color: string
     isRemoteWork: boolean
     isRealLeave: boolean
-    leaveAccount: LeaveAccount
 }
 
-export interface LeaveAccount {
-    id: number
-    name: string
-    i18nLabels: []
-    isRemoteWork: boolean
-}
 export interface UserLeaves {
     data: {
         items: LeaveItem[]
     }
-}
-
-export interface IsOff {
-    isOff :boolean
-}
-
-export interface DateLeave { 
-    date: string
-    name: string
-    ownerId: number
-    am: IsOff
-    pm: IsOff
 }
 export interface GroupedByDate {
     date: LeaveItem[]
