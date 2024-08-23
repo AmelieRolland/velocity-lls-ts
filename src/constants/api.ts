@@ -4,6 +4,9 @@ import dayjs from 'dayjs'
 import 'dotenv/config'
 import _ from 'lodash'
 import axiosConfig from '../../axiosConfig.js'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+dayjs.extend(weekOfYear);
+
 
 export const squadDoc: Squad = {
     name: "✨ Squad Documentation",
@@ -33,12 +36,14 @@ export const techDep = [9, 10, 12]
 export const totalDays = 10
 
 // date format for Queries
-export const sprintStartQ = dayjs().startOf('date').format('YYYY-MM-DD')
-export const sprintEndQ = dayjs().endOf('date').add(11, 'day').format('YYYY-MM-DD')
+let sprintNumStart = 34
+let sprintNumEnd = 35
+export const sprintStartQ = dayjs().week(sprintNumStart).startOf('week').add(1, 'day').format('YYYY-MM-DD')
+export const sprintEndQ = dayjs().week(sprintNumEnd).endOf('week').subtract(1, 'day').format('YYYY-MM-DD')
 
 // date format for Display
-export const sprintStartD = dayjs().startOf('date').format('DD/MM/YYYY')
-export const sprintEndD = dayjs().endOf('date').add(11, 'day').format('DD/MM/YYYY')
+export const sprintStartD = dayjs().week(sprintNumStart).startOf('week').add(1, 'day').format('DD/MM/YYYY')
+export const sprintEndD = dayjs().week(sprintNumEnd).endOf('week').subtract(1, 'day').format('DD/MM/YYYY')
 
 //All users in TECH + PRODUCT + QA
 
