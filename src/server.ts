@@ -31,4 +31,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 getLeavesBySquad(squadCom);
 // getGlobalMessage()
 
+
 app.listen(PORT, () => {})
