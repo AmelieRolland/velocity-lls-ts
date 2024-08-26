@@ -259,13 +259,14 @@ export const getSquadAbsenceData = async (squad: Squad) => {
 // one message for all :
 
 export const getGlobalMessage = async () => {
+    const msgDisplayer: string[] = []
   try {
     const daysOff = await getDateLeave()
     const businessDays = totalDays - daysOff.length
-    console.log(
+    msgDisplayer.push(
       `📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`
     )
-    console.log(`Nombre de journées ouvrables : ${businessDays}\n`)
+    msgDisplayer.push(`Nombre de journées ouvrables : ${businessDays}\n`)
 
     const squads = [squadDoc, squadAcc, squadCom]
     for (const squad of squads) {
@@ -276,25 +277,26 @@ export const getGlobalMessage = async () => {
         const absences = squadAbsenceData?.absences
         const presences = squadAbsenceData?.totalPresenceDays
 
-        console.log(`\n -> ${squadName}`)
-        console.log(`\nTotal de jours disponibles : ${presences}`)
+        msgDisplayer.push(`\n -> ${squadName}`)
+        msgDisplayer.push(`\nTotal de jours disponibles : ${presences}`)
 
         if (absences?.length) {
-          console.log(`Absences à prévoir :`)
+            msgDisplayer.push(`Absences à prévoir :`)
           absences.forEach((absence) => {
-            console.log(
+            msgDisplayer.push(
               `   👤 ${absence.userName} : ${absence.daysAbsent} jour(s)`
             )
           })
         } else {
-          console.log(
+            msgDisplayer.push(
             `Absences à prévoir : \nAucune! votre équipe est au complet 🤗`
           )
         }
       } else {
-        console.log(`\n${squad.name} n'est pas disponible sur cette période`)
+        msgDisplayer.push(`\n${squad.name} n'est pas disponible sur cette période`)
       }
-    }
+    }      console.log(msgDisplayer)
+    return msgDisplayer
   } catch (error) {
     console.error(`Erreur lors de la génération du message global : ${error}`)
     throw error
