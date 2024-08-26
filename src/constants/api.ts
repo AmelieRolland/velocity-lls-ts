@@ -24,7 +24,7 @@ export const squadAcc: Squad = {
 }
 export const squadCom: Squad = {
   name: "Squad Communauté",
-  userIds: [10, 71, 25, 29, 74]
+  userIds: [10, 71, 25, 29]
 }
 // export const teamQA: Squad = {
 //     name: "Team QA",
