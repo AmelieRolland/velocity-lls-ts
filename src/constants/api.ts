@@ -43,8 +43,15 @@ export const techDep = [9, 10, 12]
 export const totalDays = 10
 
 // date format for Queries
-let sprintNumStart = 32
-let sprintNumEnd = 33
+let sprintNumStart = dayjs().week()
+let sprintNumEnd = sprintNumStart +1
+
+if( sprintNumStart %2 !==0){
+    sprintNumStart = sprintNumStart +1
+    sprintNumEnd = sprintNumEnd +1
+}
+
+
 export const sprintStartQ = dayjs()
   .week(sprintNumStart)
   .startOf("week")
