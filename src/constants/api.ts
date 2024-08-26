@@ -7,7 +7,6 @@ import {
   UserLeaves,
   Users,
 } from "@/entities.js"
-import axios from "axios"
 import dayjs from "dayjs"
 import "dotenv/config"
 import _ from "lodash"
