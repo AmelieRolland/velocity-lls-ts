@@ -47,8 +47,8 @@ let sprintNumStart = dayjs().week()
 let sprintNumEnd = sprintNumStart +1
 
 if( sprintNumStart %2 !==0){
-    // Si on est sur une semaine impaire, le sprint qui nous intéresse est le prochain (démarrant la semaine suivante)
-    sprintNumStart = sprintNumStart +1
+// If we are in an odd-numbered week, the sprint we are interested in is the next one (starting the following week)    
+sprintNumStart = sprintNumStart +1
     sprintNumEnd = sprintNumEnd +1
 }
 
@@ -56,7 +56,7 @@ if( sprintNumStart %2 !==0){
 export const sprintStartQ = dayjs()
   .week(sprintNumStart)
   .startOf("week")
-  .add(3, "day")  //la semaine commence un dimanche, j'ajoute 3 pour la faire commencer un mercredi, après les deux jours de bug
+  .add(3, "day")  // The week starts on Sunday, so I add 3 to make it start on Wednesday, after the two days of bugs
   .format("YYYY-MM-DD")
 export const sprintEndQ = dayjs()
   .week(sprintNumEnd)
