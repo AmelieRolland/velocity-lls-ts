@@ -43,7 +43,7 @@ export const techDep = [9, 10, 12]
 export const totalDays = 10
 
 // date format for Queries
-let sprintNumStart = dayjs().week()
+let sprintNumStart = (dayjs().week())+1 // I add 1, so we always have the next sprint
 let sprintNumEnd = sprintNumStart +1
 
 if( sprintNumStart %2 !==0){
