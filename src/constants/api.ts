@@ -197,9 +197,9 @@ export const getLeavesBySquad = async (squad: Squad) => {
           console.log(
             `${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absence à prévoir :`
           )
-          if (user.absences && user.absences.length > 0) {
-            user.absences.forEach((absence) => {
-              console.log(`- ${absence}`);
+          if (user.absences?.length > 0) {
+            user.absences.forEach(absence => {
+              console.log(`- ${absence}`)
             });
           } 
           console.log("\n");
