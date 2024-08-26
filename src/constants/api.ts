@@ -55,7 +55,7 @@ if( sprintNumStart %2 !==0){
 export const sprintStartQ = dayjs()
   .week(sprintNumStart)
   .startOf("week")
-  .add(3, "day")
+  .add(3, "day")  //la semaine commence un dimanche, j'ajoute 3 pour la faire commencer un mercredi, après les deux jorus de bug
   .format("YYYY-MM-DD")
 export const sprintEndQ = dayjs()
   .week(sprintNumEnd)
