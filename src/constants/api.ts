@@ -17,15 +17,15 @@ dayjs.extend(weekOfYear)
 
 export const squadDoc: Squad = {
   name: "Squad Documentation",
-  userIds: [39, 58],
+  userIds: [39, 58]
 }
 export const squadAcc: Squad = {
   name: "Squad Accompagnement",
-  userIds: [5, 66],
+  userIds: [5, 66]
 }
 export const squadCom: Squad = {
   name: "Squad Communauté",
-  userIds: [10, 71, 25, 29, 74],
+  userIds: [10, 71, 25, 29, 74]
 }
 // export const teamQA: Squad = {
 //     name: "Team QA",
