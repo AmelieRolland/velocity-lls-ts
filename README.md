@@ -1,6 +1,6 @@
 # Velocity calculation
 
-This tool has been created to help Product Managers to become more aware of their team's velocity, in order to manage more conciously the work that can be done within a sprint time, depending of the presences of everyone.
+This tool has been created to help Product Managers to become more aware of their team's velocity, in order to manage more conciously the work that can be done within a sprint time, depending on everyone's availability.
 
 ## Features
 
