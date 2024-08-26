@@ -130,7 +130,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
       for (const userId of squad.userIds) {
         const leavesData = await getLeavesByUserId(userId)
         const absenceDays = leavesData?.data?.items?.length / 2
-        const presenceDays = totalDays - absenceDays
+        const presenceDays = businessDays - absenceDays
 
         totalPresenceDays += presenceDays
         totalAbsenceDays += absenceDays
@@ -146,7 +146,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
         if (user) {
           if (presenceDays === totalDays) {
             fullyPresentUsers.push(`${user.firstName} ${user.lastName}`)
-          } else if (presenceDays < totalDays) {
+          } else if (presenceDays < businessDays) {
             const absences: string[] = []
             for (const date in groupedByDate) {
               const items = groupedByDate[date]
@@ -230,10 +230,13 @@ export const getSquadAbsenceData = async (squad: Squad) => {
       let totalAbsenceDays = 0
       const absences: Absences[] = []
 
+      const daysOff = await getDateLeave()
+      const businessDays = totalDays - daysOff.length
+
       for (const userId of squad.userIds) {
         const leavesData = await getLeavesByUserId(userId)
         const absenceDays = leavesData?.data?.items?.length / 2
-        const presenceDays = totalDays - absenceDays
+        const presenceDays = businessDays - absenceDays
 
         totalAbsenceDays += absenceDays
         totalPresenceDays += presenceDays
