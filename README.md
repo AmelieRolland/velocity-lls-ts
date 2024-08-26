@@ -1,26 +1,19 @@
-# Node Typescript ESM
+# Velocity calculation
 
-Minimalistic project template for a Node.js & TypeScript apps with native ESM
+This tool has been created to help Product Managers to become more aware of their team's velocity, in order to manage more conciously the work that can be done within a sprint time, depending on everyone's availability.
 
 ## Features
 
 - 💎 Node.js 18+
 - 🛠️ TypeScript 5.3
-- ⚡️ [tsx: Node.js enhanced to run TypeScript & ESM files](https://github.com/privatenumber/tsx)
-- 📁 [tsc-alias: Import path alias using `@/` prefix](https://github.com/justkey007/tsc-alias) 
-- 🔍 ESLint — To find and fix problems in your code
-- 📝 Prettier — Format your code consistently
-- 🌍 Express.js
-
+- 📅 API Lucca
 
 ## Quick Start
 
 ### 1. Clone repo
 
-clone repo without commit history
-
 ```bash
-git clone --depth=1 https://github.com/ibnumusyaffa/node-typescript-esm-starter my-project-name
+git clone https://github.com/AmelieRolland/velocity-lls-ts.git
 ```
 
 ### 2. Install dependencies
@@ -28,13 +21,18 @@ git clone --depth=1 https://github.com/ibnumusyaffa/node-typescript-esm-starter 
 ```bash
 npm install
 ```
+### 3. Add the Lucca API Key :
 
-### 3. Run the development server
+Change the .env.example file into a .env. Inside, complete this line :
+```bash
+REACT_APP_LUCCA_API_KEY=<CleLucca>
+```
+
+### 4. Run the development server
 
 ```bash
 npm run dev
 ```
-
 
 ## Available scripts
 
@@ -45,3 +43,5 @@ npm run dev
 - `npm run lint:fix` — Fix autofixable ESLint problem.
 - `npm run format:all` — Format code using Prettier for all files.
 - `npm run format:check` — Check code format using prettier.
+
+
