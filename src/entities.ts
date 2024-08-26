@@ -49,6 +49,10 @@ export interface Absences {
   userName: string
   daysAbsent: number
 }
+export interface IsOff {
+  isOff: boolean
+}
+
 export interface DateLeave {
   date: string
   name: string

@@ -7,7 +7,6 @@ import {
   UserLeaves,
   Users,
 } from "@/entities.js"
-import axios from "axios"
 import dayjs from "dayjs"
 import "dotenv/config"
 import _ from "lodash"
@@ -43,12 +42,20 @@ export const techDep = [9, 10, 12]
 export const totalDays = 10
 
 // date format for Queries
-let sprintNumStart = 32
-let sprintNumEnd = 33
+let sprintNumStart = (dayjs().week())+1 // I add 1, so we always have the next sprint
+let sprintNumEnd = sprintNumStart +1
+
+if( sprintNumStart %2 !==0){
+// If we are in an odd-numbered week, the sprint we are interested in is the next one (starting the following week)    
+sprintNumStart = sprintNumStart +1
+    sprintNumEnd = sprintNumEnd +1
+}
+
+
 export const sprintStartQ = dayjs()
   .week(sprintNumStart)
   .startOf("week")
-  .add(3, "day")
+  .add(3, "day")  // The week starts on Sunday, so I add 3 to make it start on Wednesday, after the two days of bugs
   .format("YYYY-MM-DD")
 export const sprintEndQ = dayjs()
   .week(sprintNumEnd)
