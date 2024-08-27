@@ -144,7 +144,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
           (user) => user.id === userId
         )
         if (user) {
-          if (presenceDays === totalDays) {
+          if (presenceDays === businessDays) {
             fullyPresentUsers.push(`${user.firstName} ${user.lastName}`)
           } else if (presenceDays < businessDays) {
             const absences: string[] = []
