@@ -174,7 +174,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
           }
         }
       }
-      const totalDaysAvailable = totalDevelopers * totalDays
+      const totalDaysAvailable = totalDevelopers * businessDays
       console.log(
         `📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`
       )
@@ -202,7 +202,7 @@ export const getLeavesBySquad = async (squad: Squad) => {
           )
         } else {
           console.log(
-            `${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absence à prévoir :`
+            `${user.userName} sera présent(e) ${user.presenceDays} jours sur ${businessDays}. Jours d'absence à prévoir :`
           )
           if (user.absences?.length > 0) {
             user.absences.forEach(absence => {
