@@ -5,7 +5,7 @@ import {
   getLeavesBySquad,
   squadCom,
 } from "./constants/api.js"
-import { sendMessageToSlack } from "./constants/api-slack.js"
+import { messageBySquad, messageGlobal, sendMessageToSlack } from "./constants/api-slack.js"
 
 const app = express()
 const PORT = process.env.PORT || 3002
@@ -31,6 +31,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // getLeavesBySquad(squadCom);
 // getGlobalMessage()
 
-sendMessageToSlack()
+sendMessageToSlack(messageBySquad)
 
 app.listen(PORT, () => {})

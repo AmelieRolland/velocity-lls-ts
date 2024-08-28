@@ -115,6 +115,7 @@ export const getDateLeave = (): Promise<DateLeave[]> => {
 // Absences and presences sorted by Squad
 
 export const getLeavesBySquad = async (squad: Squad) => {
+  const squadLeavesMsg: string[] = []
   try {
     const totalDevelopers = squad.userIds.length
     let totalPresenceDays = 0
@@ -174,42 +175,43 @@ export const getLeavesBySquad = async (squad: Squad) => {
         }
       }
       const totalDaysAvailable = totalDevelopers * totalDays
-      console.log(
+      squadLeavesMsg.push(
         `📅 Sprint Numéro : ${sprintNumStart} \nPériode du : ${sprintStartD} au ${sprintEndD}\n`
       )
-      console.log(`\n✨ Salut, ${squad.name} ! ✨`)
+      squadLeavesMsg.push(`\n✨ Salut, ${squad.name} ! ✨`)
 
       if (totalDaysAvailable) {
-        console.log(`\nTotal de jours disponibles : ${totalPresenceDays}`)
+        squadLeavesMsg.push(`\nTotal de jours disponibles : ${totalPresenceDays}`)
       } else {
-        console.log(`${squad.name} n'est pas disponible sur cette période`)
+        squadLeavesMsg.push(`${squad.name} n'est pas disponible sur cette période`)
       }
-      console.log(`Nombre de journées ouvrables : ${businessDays}\n`)
+      squadLeavesMsg.push(`Nombre de journées ouvrables : ${businessDays}\n`)
       if (fullyPresentUsers.length) {
-        console.log(
+        squadLeavesMsg.push(
           `${fullyPresentUsers.length} dev(s) présent(s) sur toute la durée du sprint :`
         )
         fullyPresentUsers.forEach((user) => {
-          console.log(`- ${user}`)
+          squadLeavesMsg.push(`- ${user}`)
         })
-        console.log("\n")
+        squadLeavesMsg.push("\n")
       }
       absentUsers.forEach((user) => {
         if (user.presenceDays === 0) {
-          console.log(
+          squadLeavesMsg.push(
             `${user.userName} sera absent sur toute la durée de ce sprint\n`
           )
         } else {
-          console.log(
+          squadLeavesMsg.push(
             `${user.userName} sera présent(e) ${user.presenceDays} jours sur ${totalDays}. Jours d'absence à prévoir :`
           )
           user.absences.forEach((absence) => {
-            console.log(`- ${absence}`)
+            squadLeavesMsg.push(`- ${absence}`)
           })
-          console.log("\n")
+          squadLeavesMsg.push("\n")
         }
       })
     }
+    return squadLeavesMsg
   } catch (error) {
     console.error(
       `Erreur lors de la récupération des jours de présence pour la squad : ${error}`

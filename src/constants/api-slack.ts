@@ -1,12 +1,16 @@
 import "dotenv/config"
 import axios from "axios"
-import { getGlobalMessage } from "./api.js"
+import { getGlobalMessage, getLeavesBySquad, squadCom } from "./api.js"
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL
 
-export const sendMessageToSlack = async () => {
-  const messageArray = await getGlobalMessage()
-  const message = messageArray.join(" \n ")
+const messageGlobalArr= await getGlobalMessage()
+export const messageGlobal = messageGlobalArr.join(" \n ")
+
+const messageBySquadArr = await getLeavesBySquad(squadCom)
+export const messageBySquad = messageBySquadArr.join(" \n ")
+
+export const sendMessageToSlack = async (message: string) => {
   try {
     if (!SLACK_WEBHOOK_URL) {
       throw new Error(
